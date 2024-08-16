@@ -34,6 +34,7 @@ services:
       - "5432:5432"
     volumes:
       - recruitment_task-db:/var/lib/postgresql/data
+      - ./docker/db-scripts:/db-scripts
 volumes:
   recruitment_task-db:
     external: true
