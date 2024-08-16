@@ -124,5 +124,4 @@ class NewsRepository
         }
         return 0;
     }
-
 }

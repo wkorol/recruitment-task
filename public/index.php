@@ -20,15 +20,14 @@ $newsController = new NewsController($newsRepository);
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+handleNewsRoutes($path, $newsController) ||
+handleLoginRoutes($path, $loginController) ||
+redirectToLogin();
 
-handleNewsRoutes($path, $newsController);
-handleLoginRoutes($path, $loginController);
-
-
-function handleNewsRoutes(string $path, NewsController $newsController): void
+function handleNewsRoutes(string $path, NewsController $newsController): bool
 {
     if (!preg_match('/^\/news(?:\/(\d+))?$/', $path, $matches)) {
-        return;
+        return false;
     }
 
     $newsId = isset($matches[1]) ? (int)$matches[1] : null;
@@ -36,42 +35,49 @@ function handleNewsRoutes(string $path, NewsController $newsController): void
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($newsId === null) {
             $newsController->getAllNewses();
-            return;
+        } else {
+            $newsController->getNewsById($newsId);
         }
-
-        $newsController->getNewsById($newsId);
-        return;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $newsId !== null) {
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $newsId !== null) {
         $newsController->deleteNewsById($newsId);
-        return;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $newsId === null) {
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $newsId === null) {
         $newsController->createNews();
-        return;
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT' && $newsId !== null) {
+        $newsController->updateNews($newsId);
+    } else {
+        http_response_code(405);
+        echo 'Method not allowed';
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $newsId !== null) {
-        $newsController->updateNews($newsId);
-    }
+    return true;
 }
 
-function handleLoginRoutes(string $path, LoginController $loginController): void
+function handleLoginRoutes(string $path, LoginController $loginController): bool
 {
     if ($path === '/login') {
         $loginController->login();
-        return;
+        return true;
     }
 
     if ($path === '/logout') {
         $loginController->logout();
+        return true;
     }
 
     if ($path === '/check-login-status') {
         header('Content-Type: application/json');
         echo json_encode(['loggedIn' => $loginController->isLoggedIn()]);
+        return true;
     }
+
+    return false;
 }
 
+function redirectToLogin(): void
+{
+    if (isset($_SESSION['login'])) {
+        header('Location: /dashboard.php');
+        exit;
+    }
+    header('Location: /login.php');
+}
