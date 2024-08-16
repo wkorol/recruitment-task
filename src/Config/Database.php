@@ -19,8 +19,6 @@ class Database
 
         $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
 
-        var_dump($dsn);
-
         try {
             $pdo = new PDO($dsn, $user, $password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

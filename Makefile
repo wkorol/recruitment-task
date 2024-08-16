@@ -3,7 +3,7 @@ APP_ENV ?= dev
 DOCKER_COMPOSE_CMD ?= docker compose
 EXEC_COMMAND ?= ${DOCKER_COMPOSE_CMD} exec application
 
-start: create_volumes build up
+start: create_volumes build up load_user load_news
 build:
 	${DOCKER_COMPOSE_CMD} build
 create_volumes:
@@ -16,4 +16,8 @@ bash:
 	${EXEC_COMMAND} bash
 phpunit:
 	${EXEC_COMMAND} vendor/bin/phpunit tests
+load_user:
+	${DOCKER_COMPOSE_CMD} exec database psql -U main -f /db-scripts/user.sql || true
+load_news:
+	${DOCKER_COMPOSE_CMD} exec database psql -U main -f /db-scripts/news.sql || true
 test: phpunit
