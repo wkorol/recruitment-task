@@ -20,6 +20,11 @@ $newsController = new NewsController($newsRepository);
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+
+handleNewsRoutes($path, $newsController);
+handleLoginRoutes($path, $loginController);
+
+
 function handleNewsRoutes(string $path, NewsController $newsController): void
 {
     if (!preg_match('/^\/news(?:\/(\d+))?$/', $path, $matches)) {
@@ -50,11 +55,7 @@ function handleNewsRoutes(string $path, NewsController $newsController): void
 
     if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $newsId !== null) {
         $newsController->updateNews($newsId);
-        return;
     }
-
-    http_response_code(405);
-    echo 'Method not allowed';
 }
 
 function handleLoginRoutes(string $path, LoginController $loginController): void
@@ -67,12 +68,10 @@ function handleLoginRoutes(string $path, LoginController $loginController): void
     if ($path === '/logout') {
         $loginController->logout();
     }
+
+    if ($path === '/check-login-status') {
+        header('Content-Type: application/json');
+        echo json_encode(['loggedIn' => $loginController->isLoggedIn()]);
+    }
 }
 
-handleNewsRoutes($path, $newsController);
-handleLoginRoutes($path, $loginController);
-
-if ($path === '/') {
-    echo 'TODO';
-    return;
-}
