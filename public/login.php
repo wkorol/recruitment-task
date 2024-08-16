@@ -29,8 +29,7 @@
         })
             .then(response => {
                 if (response.status === 200) {
-                    //TODO Dashboard
-                    window.location.href = '/news';
+                    window.location.href = '/dashboard.php';
                 }
             })
             .catch(error => {
