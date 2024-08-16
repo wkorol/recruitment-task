@@ -156,3 +156,25 @@ body {
     font-weight: bold;
     font-size: 18px;
 }
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.close-edit-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-edit-button .icon {
+    width: 14px;
+    height: 14px;
+}

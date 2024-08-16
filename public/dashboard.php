@@ -24,11 +24,16 @@ declare(strict_types=1);
 
 
     <div class="create-news-section">
-        <h2>Create News</h2>
+        <div class="form-header">
+            <h2 id="form-heading">Create News</h2>
+            <button type="button" class="icon-button close-edit-button" id="close-edit-button" style="display: none;">
+                <img src="resources/svg/close.svg" alt="Close" class="icon">
+            </button>
+        </div>
         <form id="create-news-form" class="create-news-form">
             <input type="text" name="title" placeholder="Title" class="input-field" required>
             <textarea name="description" placeholder="Description" class="input-field textarea-field" required></textarea>
-            <button type="submit" class="action-button">Create</button>
+            <button type="submit" class="action-button" id="form-submit-button">Create</button>
         </form>
         <div id="form-feedback" class="feedback-message"></div>
     </div>
@@ -39,6 +44,9 @@ declare(strict_types=1);
 </div>
 
 <script>
+    let isEditMode = false;
+    let editNewsId = null;
+
     async function loadNews() {
         try {
             const response = await fetch('/news');
@@ -72,11 +80,11 @@ declare(strict_types=1);
                     const editButton = document.createElement('button');
                     editButton.className = 'icon-button edit-button';
                     editButton.innerHTML = '<img src="resources/svg/pencil.svg" alt="Edit" class="icon">';
+                    editButton.addEventListener('click', () => enterEditMode(news));
 
                     const deleteButton = document.createElement('button');
                     deleteButton.className = 'icon-button delete-button';
                     deleteButton.innerHTML = '<img src="resources/svg/close.svg" alt="Delete" class="icon">';
-
                     deleteButton.addEventListener('click', () => deleteNews(news.id));
 
                     newsActions.appendChild(editButton);
@@ -95,7 +103,33 @@ declare(strict_types=1);
         }
     }
 
-    async function createNews(event) {
+    function enterEditMode(news) {
+        isEditMode = true;
+        editNewsId = news.id;
+
+        document.querySelector('input[name="title"]').value = news.title;
+        document.querySelector('textarea[name="description"]').value = news.description;
+
+        document.getElementById('form-heading').textContent = 'Edit News';
+        document.getElementById('form-submit-button').textContent = 'Save';
+
+        document.getElementById('close-edit-button').style.display = 'inline-block';
+    }
+
+    function exitEditMode() {
+        isEditMode = false;
+        editNewsId = null;
+
+        document.querySelector('input[name="title"]').value = '';
+        document.querySelector('textarea[name="description"]').value = '';
+
+        document.getElementById('form-heading').textContent = 'Create News';
+        document.getElementById('form-submit-button').textContent = 'Create';
+
+        document.getElementById('close-edit-button').style.display = 'none';
+    }
+
+    async function createOrUpdateNews(event) {
         event.preventDefault();
 
         const form = event.target;
@@ -109,29 +143,45 @@ declare(strict_types=1);
         successMessage.style.display = 'none';
 
         try {
-            const response = await fetch('/news', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: title,
-                    description: description,
-                }),
-            });
+            let response;
+            if (isEditMode && editNewsId !== null) {
+                response = await fetch(`/news/${editNewsId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                    }),
+                });
+            } else {
+                response = await fetch('/news', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                    }),
+                });
+            }
 
             const result = await response.json();
-            console.log('News created:', result);
+            console.log('Operation result:', result);
 
             await loadNews();
 
             form.reset();
 
-            successMessage.textContent = 'News was successfully created!';
+            successMessage.textContent = isEditMode ? 'News was successfully updated!' : 'News was successfully created!';
             successMessage.style.display = 'block';
 
+            exitEditMode();
+
         } catch (error) {
-            console.error('Error creating news:', error);
+            console.error('Error saving news:', error);
         }
     }
 
@@ -162,7 +212,8 @@ declare(strict_types=1);
     }
 
     document.addEventListener('DOMContentLoaded', loadNews);
-    document.getElementById('create-news-form').addEventListener('submit', createNews);
+    document.getElementById('create-news-form').addEventListener('submit', createOrUpdateNews);
+    document.getElementById('close-edit-button').addEventListener('click', exitEditMode);
 
 </script>
 </body>

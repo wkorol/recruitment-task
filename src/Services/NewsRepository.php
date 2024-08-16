@@ -47,7 +47,7 @@ class NewsRepository
      */
     public function getAllNews(): array
     {
-        $query = 'SELECT * FROM news';
+        $query = 'SELECT * FROM news ORDER BY id';
         $newsList = [];
 
         try {
