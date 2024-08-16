@@ -3,7 +3,7 @@ APP_ENV ?= dev
 DOCKER_COMPOSE_CMD ?= docker compose
 EXEC_COMMAND ?= ${DOCKER_COMPOSE_CMD} exec application
 
-start: create_volumes build up load_user load_news
+start: create_volumes build up composer_install load_user load_news
 build:
 	${DOCKER_COMPOSE_CMD} build
 create_volumes:
@@ -14,6 +14,8 @@ down:
 	${DOCKER_COMPOSE_CMD}  down
 bash:
 	${EXEC_COMMAND} bash
+composer_install:
+	${EXEC_COMMAND} composer install -o --no-interaction --profile --no-ansi --no-progress
 phpunit:
 	${EXEC_COMMAND} vendor/bin/phpunit tests
 load_user:
