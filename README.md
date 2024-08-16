@@ -10,3 +10,11 @@ Please check that you don't have reserved ports by any application: `8000 and 54
 
 ## Starting project
 To start project just run command `make start` and if you have good prepared environment - everything will be created automatically
+
+## Starting and stopping project
+To start project after you built it just run command `make up` to start containers and to stop them just use `make down`, for rest commands just check `cat Makefile`
+
+## APP Preview
+![image](https://github.com/user-attachments/assets/935683a6-0f9d-4bd8-a5ed-54ff7a86ddab)
+![image](https://github.com/user-attachments/assets/b811cf3b-eef9-474d-a4e6-d846cbeb5f45)
+
