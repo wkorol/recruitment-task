@@ -1,6 +1,8 @@
 <?php
 
 declare(strict_types=1);
+
+require_once __DIR__ . '/auth_check.php';
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +24,6 @@ declare(strict_types=1);
         </div>
     </div>
 
-
     <div class="create-news-section">
         <div class="form-header">
             <h2 id="form-heading">Create News</h2>
@@ -37,8 +38,8 @@ declare(strict_types=1);
         </form>
         <div id="form-feedback" class="feedback-message"></div>
     </div>
-    
-    <form action="logout.php" method="POST">
+
+    <form id="logout-form" method="POST">
         <button type="submit" class="action-button">Logout</button>
     </form>
 </div>
@@ -211,9 +212,30 @@ declare(strict_types=1);
         }
     }
 
+    async function logout(event) {
+        event.preventDefault();
+
+        try {
+            const response = await fetch('/logout', {
+                method: 'POST',
+            });
+
+            if (response.ok) {
+                window.location.href = '/login.php';
+            } else {
+                const errorMessage = await response.text();
+                throw new Error(errorMessage);
+            }
+
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', loadNews);
     document.getElementById('create-news-form').addEventListener('submit', createOrUpdateNews);
     document.getElementById('close-edit-button').addEventListener('click', exitEditMode);
+    document.getElementById('logout-form').addEventListener('submit', logout);
 
 </script>
 </body>
