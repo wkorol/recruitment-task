@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  base:
+    build:
+      context: ./
+      dockerfile: ./docker/base/Dockerfile
+    image: recruitment_task-base
+  application:
+    depends_on:
+      - base
+    build:
+      context: ./
+      dockerfile: ./docker/dev/Dockerfile
+    image: recruitment_task
+    volumes:
+      - ./docker/dev/vhost.conf:/etc/apache2/sites-enabled/000-default.conf
+      - .:/home/recruitment_task
+    networks:
+      - default
+    environment:
+      POSTGRES_PASSWORD: main
+      POSTGRES_USER: main
+      POSTGRES_DB: main
+    ports:
+      - "8000:80"
+  database:
+    image: 'postgres:16.2-alpine3.19'
+    environment:
+      POSTGRES_PASSWORD: main
+      POSTGRES_USER: main
+      POSTGRES_DB: main
+    ports:
+      - "5432:5432"
+    volumes:
+      - recruitment_task-db:/var/lib/postgresql/data
+volumes:
+  recruitment_task-db:
+    external: true
