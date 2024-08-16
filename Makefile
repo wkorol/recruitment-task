@@ -14,10 +14,6 @@ down:
 	${DOCKER_COMPOSE_CMD}  down
 bash:
 	${EXEC_COMMAND} bash
-create_database:
-	${EXEC_COMMAND} bin/console do:database:create --if-not-exists
-drop_database:
-	${EXEC_COMMAND} bin/console doctrine:database:drop --env=${APP_ENV} --force --if-exists
 phpunit:
 	${EXEC_COMMAND} vendor/bin/phpunit tests
 test: phpunit
