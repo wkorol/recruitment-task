@@ -32,8 +32,7 @@ declare(strict_types=1);
         </form>
         <div id="form-feedback" class="feedback-message"></div>
     </div>
-
-    <!-- Logout Button -->
+    
     <form action="logout.php" method="POST">
         <button type="submit" class="action-button">Logout</button>
     </form>
@@ -43,45 +42,53 @@ declare(strict_types=1);
     async function loadNews() {
         try {
             const response = await fetch('/news');
-
             const newsItems = await response.json();
 
             const newsList = document.getElementById('news-list');
+            const newsSection = document.querySelector('.news-section');
 
             newsList.innerHTML = '';
 
-            newsItems.forEach(news => {
-                const newsItem = document.createElement('div');
-                newsItem.className = 'news-item';
+            if (newsItems.length === 0) {
+                newsSection.style.display = 'none';
+            } else {
+                newsSection.style.display = 'block';
 
-                const newsTitle = document.createElement('div');
-                newsTitle.className = 'news-title';
-                newsTitle.textContent = news.title;
+                newsItems.forEach(news => {
+                    const newsItem = document.createElement('div');
+                    newsItem.className = 'news-item';
 
-                const newsDescription = document.createElement('div');
-                newsDescription.className = 'news-description';
-                newsDescription.textContent = news.description;
+                    const newsTitle = document.createElement('div');
+                    newsTitle.className = 'news-title';
+                    newsTitle.textContent = news.title;
 
-                const newsActions = document.createElement('div');
-                newsActions.className = 'news-actions';
+                    const newsDescription = document.createElement('div');
+                    newsDescription.className = 'news-description';
+                    newsDescription.textContent = news.description;
 
-                const editButton = document.createElement('button');
-                editButton.className = 'icon-button edit-button';
-                editButton.innerHTML = '<img src="resources/svg/pencil.svg" alt="Edit" class="icon">';
+                    const newsActions = document.createElement('div');
+                    newsActions.className = 'news-actions';
 
-                const deleteButton = document.createElement('button');
-                deleteButton.className = 'icon-button delete-button';
-                deleteButton.innerHTML = '<img src="resources/svg/close.svg" alt="Delete" class="icon">';
+                    const editButton = document.createElement('button');
+                    editButton.className = 'icon-button edit-button';
+                    editButton.innerHTML = '<img src="resources/svg/pencil.svg" alt="Edit" class="icon">';
 
-                newsActions.appendChild(editButton);
-                newsActions.appendChild(deleteButton);
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'icon-button delete-button';
+                    deleteButton.innerHTML = '<img src="resources/svg/close.svg" alt="Delete" class="icon">';
 
-                newsItem.appendChild(newsTitle);
-                newsItem.appendChild(newsDescription);
-                newsItem.appendChild(newsActions);
+                    deleteButton.addEventListener('click', () => deleteNews(news.id));
 
-                newsList.appendChild(newsItem);
-            });
+                    newsActions.appendChild(editButton);
+                    newsActions.appendChild(deleteButton);
+
+                    newsItem.appendChild(newsTitle);
+                    newsItem.appendChild(newsDescription);
+                    newsItem.appendChild(newsActions);
+
+                    newsList.appendChild(newsItem);
+                });
+            }
 
         } catch (error) {
             console.error('Error loading news:', error);
@@ -90,7 +97,6 @@ declare(strict_types=1);
 
     async function createNews(event) {
         event.preventDefault();
-
 
         const form = event.target;
         const title = form.title.value;
@@ -121,7 +127,7 @@ declare(strict_types=1);
 
             form.reset();
 
-            successMessage.textContent = 'News was successful created!';
+            successMessage.textContent = 'News was successfully created!';
             successMessage.style.display = 'block';
 
         } catch (error) {
@@ -129,9 +135,35 @@ declare(strict_types=1);
         }
     }
 
+    async function deleteNews(id) {
+        try {
+            const response = await fetch(`/news/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(errorMessage || 'Failed to delete news');
+            }
+
+            const result = await response.json();
+            console.log('News deleted:', result);
+
+            await loadNews();
+
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = 'News was successfully deleted!';
+            successMessage.style.display = 'block';
+
+        } catch (error) {
+            console.error('Error deleting news:', error);
+            alert('Failed to delete news. Please try again.');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', loadNews);
-    
     document.getElementById('create-news-form').addEventListener('submit', createNews);
+
 </script>
 </body>
 </html>
