@@ -9,12 +9,12 @@ class JsonResponse
     private ?string $message = null;
     private ?string $error = null;
 
-    public function __construct(private array $data, private int $statusCode = 200)
+    public function __construct(private readonly array $data, private readonly int $statusCode = 200)
     {
         $this->extractMessagesAndErrors($data);
         header('Content-Type: application/json');
         http_response_code($statusCode);
-        echo json_encode($data);
+        echo json_encode($data, JSON_PRETTY_PRINT);
     }
 
     private function extractMessagesAndErrors(array $data): void
