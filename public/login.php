@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="resources/styles.css">
+    <style>
+        .login-container {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<div class="login-container">
+<div class="login-container" id="login-container">
     <img src="resources/svg/logo.svg" alt="Logo" class="logo">
 
     <div id="success-message" class="success-message" style="display: none;"></div>
@@ -21,6 +26,22 @@
 </div>
 
 <script>
+    (function() {
+        fetch('/check-login-status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    window.location.href = '/dashboard.php';
+                } else {
+                    document.getElementById('login-container').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking login status:', error);
+                document.getElementById('login-container').style.display = 'block';
+            });
+    })();
+
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
