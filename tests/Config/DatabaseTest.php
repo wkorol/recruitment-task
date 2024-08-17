@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Config\Database;
-use App\Config\EnvLoader;
+
 use PHPUnit\Framework\TestCase;
+use src\Config\Database;
+use src\Config\EnvLoader;
 
 class DatabaseTest extends TestCase
 {
