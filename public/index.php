@@ -12,6 +12,7 @@ use src\Config\Database;
 use src\Config\EnvLoader;
 
 EnvLoader::load();
+
 $database = new Database();
 $userRepository = new UserRepository($database);
 $newsRepository = new NewsRepository($database);
@@ -20,13 +21,19 @@ $newsController = new NewsController($newsRepository);
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-handleNewsRoutes($path, $newsController) ||
+handleNewsRoutes($path, $newsController, $loginController) ||
 handleLoginRoutes($path, $loginController) ||
 redirectToLogin();
 
-function handleNewsRoutes(string $path, NewsController $newsController): bool
+function handleNewsRoutes(string $path, NewsController $newsController, LoginController $loginController): bool
 {
-    if (!preg_match('/^\/news(?:\/(\d+))?$/', $path, $matches)) {
+    $newsRegex = '/^\/news(?:\/(\d+))?$/';
+    if (!$loginController->isLoggedIn() && preg_match($newsRegex, $path)) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized access']);
+        return true;
+    }
+    if (!preg_match($newsRegex, $path, $matches)) {
         return false;
     }
 
@@ -54,17 +61,19 @@ function handleNewsRoutes(string $path, NewsController $newsController): bool
 
 function handleLoginRoutes(string $path, LoginController $loginController): bool
 {
-    if ($path === '/login') {
-        $loginController->login();
-        return true;
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if ($path === '/login') {
+            $loginController->login();
+            return true;
+        }
+
+        if ($path === '/logout') {
+            $loginController->logout();
+            return true;
+        }
     }
 
-    if ($path === '/logout') {
-        $loginController->logout();
-        return true;
-    }
-
-    if ($path === '/check-login-status') {
+    if ($path === '/check-login-status' && $_SERVER['REQUEST_METHOD'] === 'GET') {
         header('Content-Type: application/json');
         echo json_encode(['loggedIn' => $loginController->isLoggedIn()]);
         return true;
@@ -77,7 +86,6 @@ function redirectToLogin(): void
 {
     if (isset($_SESSION['login'])) {
         header('Location: /dashboard.php');
-        exit;
     }
     header('Location: /login.php');
 }
