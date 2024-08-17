@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Config\EnvLoader;
+use src\Config\EnvLoader;
 use PHPUnit\Framework\TestCase;
 
 class EnvLoaderTest extends TestCase
