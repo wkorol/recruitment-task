@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Config\Database;
-use App\Config\EnvLoader;
 use App\Controller\LoginController;
 use App\Controller\NewsController;
 use App\Services\NewsRepository;
 use App\Services\UserRepository;
+use src\Config\Database;
+use src\Config\EnvLoader;
 
 EnvLoader::load();
 $database = new Database();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Config\Database;
+use src\Config\Database;
 use App\Dto\News;
 use PDO;
 use PDOException;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Config;
+namespace src\Config;
 
 use Dotenv\Dotenv;
 
