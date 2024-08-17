@@ -17,6 +17,10 @@ readonly class LoginController
 
     public function login(): JsonResponse
     {
+        if ($this->isLoggedIn()) {
+            return new JsonResponse(['error' => 'You are already logged in.'], 400);
+        }
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $login = $_POST['login'] ?? null;
             $password = $_POST['password'] ?? null;
