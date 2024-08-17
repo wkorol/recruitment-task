@@ -7,9 +7,11 @@ To run the project, you will need Docker (tested on version 27.1.1, build 631258
 ## Ports
 Please check that you don't have reserved ports by any application: `8000 and 5432` 
 
-
 ## Starting project
 To start project just run command `make start` and if you have good prepared environment - everything will be created automatically
+
+## Check website
+After start just go to your web browser and enter `localhost:8000`
 
 ## Starting and stopping project
 To start project after you built it just run command `make up` to start containers and to stop them just use `make down`, for rest commands just check `cat Makefile`
