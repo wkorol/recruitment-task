@@ -16,9 +16,8 @@ require_once __DIR__ . '/auth_check.php';
 <body>
 <div class="dashboard-container">
     <img src="resources/svg/logo.svg" alt="Logo" class="logo">
-
+    <div id="success-message" class="success-message" style="display: none;"></div>
     <div class="news-section">
-        <div id="success-message" class="success-message" style="display: none;"></div>
         <h2>All News</h2>
         <div id="news-list">
         </div>
