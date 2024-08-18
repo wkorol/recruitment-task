@@ -115,7 +115,7 @@ None
 ---
 
 ### 3. **IsLoggedIn**
-**URL:** `/isLoggedIn`
+**URL:** `/check-login-status`
 
 **Method:** `GET`
 
