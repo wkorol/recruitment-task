@@ -17,8 +17,7 @@ After start just go to your web browser and enter `localhost:8000` and login wit
 To run tests please run command `make test`
 
 ## Starting and stopping project
-To start project after you built it just run command `make up` to start containers and to stop them just use `make down`, for rest commands just check `cat Makefile`
-
+To start project after you built it just run command `make up` to start containers and to stop them just use `make down`.
 ## More Makefile Commands
 If you want to check the other commands, just check [Makefile](Makefile)
 
