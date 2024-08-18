@@ -11,12 +11,13 @@ Please check that you don't have reserved ports by any application: `8000 and 54
 To start project just run command `make start` and if you have good prepared environment - everything will be created automatically
 
 ## Check website
-After start just go to your web browser and enter `localhost:8000`
+After start just go to your web browser and enter `localhost:8000` and login with credentials `login: admin` and `password: test`
+
+## Test command
+To run tests please run command `make test`
 
 ## Starting and stopping project
 To start project after you built it just run command `make up` to start containers and to stop them just use `make down`, for rest commands just check `cat Makefile`
-
-Sure! Here is a simple API documentation for the `LoginController` class based on the provided PHP code. This documentation assumes a RESTful API and covers the endpoints `login`, `logout`, and `isLoggedIn`.
 
 ## More Makefile Commands
 If you want to check the other commands, just check [Makefile](Makefile)
