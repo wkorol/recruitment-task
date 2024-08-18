@@ -11,7 +11,15 @@ use PHPUnit\Framework\TestCase;
 
 class LoginControllerTest extends TestCase
 {
-    public function testLoginSuccessful()
+    protected function tearDown(): void
+    {
+        $_SESSION = [];
+        session_unset();
+        session_destroy();
+
+        parent::tearDown();
+    }
+    public function testLoginSuccessful(): void
     {
         $userRepositoryMock = $this->createMock(UserRepository::class);
 
@@ -30,9 +38,10 @@ class LoginControllerTest extends TestCase
         $response = $loginController->login();
 
         $this->assertStringContainsString('Login successful', $response->getMessage());
+
     }
 
-    public function testLoginFailed()
+    public function testLoginFailed(): void
     {
         $userRepositoryMock = $this->createMock(UserRepository::class);
 
