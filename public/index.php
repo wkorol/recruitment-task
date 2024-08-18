@@ -6,6 +6,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controller\LoginController;
 use App\Controller\NewsController;
+use App\Services\JsonResponse;
 use App\Services\NewsRepository;
 use App\Services\UserRepository;
 use src\Config\Database;
@@ -25,61 +26,52 @@ handleNewsRoutes($path, $newsController, $loginController) ||
 handleLoginRoutes($path, $loginController) ||
 redirectToLogin();
 
-function handleNewsRoutes(string $path, NewsController $newsController, LoginController $loginController): bool
+function handleNewsRoutes(string $path, NewsController $newsController, LoginController $loginController): ?JsonResponse
 {
     $newsRegex = '/^\/news(?:\/(\d+))?$/';
     if (!$loginController->isLoggedIn() && preg_match($newsRegex, $path)) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Unauthorized access']);
-        return true;
+        return new JsonResponse(['error' => 'Unauthorized access'], 401);
     }
     if (!preg_match($newsRegex, $path, $matches)) {
-        return false;
+        return null;
     }
 
     $newsId = isset($matches[1]) ? (int)$matches[1] : null;
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($newsId === null) {
-            $newsController->getAllNewses();
-        } else {
-            $newsController->getNewsById($newsId);
+            return $newsController->getAllNewses();
         }
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $newsId !== null) {
-        $newsController->deleteNewsById($newsId);
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $newsId === null) {
-        $newsController->createNews();
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT' && $newsId !== null) {
-        $newsController->updateNews($newsId);
-    } else {
-        http_response_code(405);
-        echo 'Method not allowed';
+
+        return $newsController->getNewsById($newsId);
+    } if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $newsId !== null) {
+       return $newsController->deleteNewsById($newsId);
+    } if ($_SERVER['REQUEST_METHOD'] === 'POST' && $newsId === null) {
+        return $newsController->createNews();
+    } if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $newsId !== null) {
+        return $newsController->updateNews($newsId);
     }
 
-    return true;
+    return null;
 }
 
-function handleLoginRoutes(string $path, LoginController $loginController): bool
+function handleLoginRoutes(string $path, LoginController $loginController): ?JsonResponse
 {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($path === '/login') {
-            $loginController->login();
-            return true;
+            return $loginController->login();
         }
 
         if ($path === '/logout') {
-            $loginController->logout();
-            return true;
+            return $loginController->logout();
         }
     }
 
     if ($path === '/check-login-status' && $_SERVER['REQUEST_METHOD'] === 'GET') {
-        header('Content-Type: application/json');
-        echo json_encode(['loggedIn' => $loginController->isLoggedIn()]);
-        return true;
+        return new JsonResponse(['loggedIn' => $loginController->isLoggedIn()]);
     }
 
-    return false;
+    return null;
 }
 
 function redirectToLogin(): void

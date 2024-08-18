@@ -43,20 +43,24 @@ readonly class LoginController
                 401
             );
         }
-        return new JsonResponse(['No credentials provided'], 400);
+
+        return JsonResponse::wrongRequestMethod($_SERVER['REQUEST_METHOD']);
     }
 
     public function logout(): JsonResponse
     {
-        if ($this->isLoggedIn()) {
-            session_unset();
-            session_destroy();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($this->isLoggedIn()) {
+                session_unset();
+                session_destroy();
 
-            setcookie('session_id', '', time() - 3600, '/');
+                setcookie('session_id', '', time() - 3600, '/');
 
-            return new JsonResponse(['message' => 'Logout successful']);
+                return new JsonResponse(['message' => 'Logout successful']);
+            }
+            return new JsonResponse(['error' => 'Nobody is logged in'], 400);
         }
-        return new JsonResponse(['error' => 'Nobody is logged in'], 400);
+        return JsonResponse::wrongRequestMethod($_SERVER['REQUEST_METHOD']);
     }
 
     public function isLoggedIn(): bool

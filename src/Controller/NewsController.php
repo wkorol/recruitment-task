@@ -34,7 +34,7 @@ readonly class NewsController
             return new JsonResponse([$news], 200);
         }
 
-        return new JsonResponse(['error' => 'Invalid request method'], 405);
+        return JsonResponse::wrongRequestMethod($_SERVER['REQUEST_METHOD']);
     }
 
     public function deleteNewsById(int $id): JsonResponse
@@ -51,7 +51,7 @@ readonly class NewsController
            }
            return new JsonResponse(['message' => 'News deleted'], 200);
        }
-       return new JsonResponse(['error' => 'Invalid request method'], 405);
+        return JsonResponse::wrongRequestMethod($_SERVER['REQUEST_METHOD']);
     }
 
     public function getAllNewses(): JsonResponse
@@ -66,7 +66,7 @@ readonly class NewsController
             return new JsonResponse($allNewses, 200);
         }
 
-        return new JsonResponse(['error' => 'Invalid request method'], 405);
+        return JsonResponse::wrongRequestMethod($_SERVER['REQUEST_METHOD']);
     }
 
     public function createNews(): JsonResponse
@@ -83,7 +83,7 @@ readonly class NewsController
             }
             return new JsonResponse(['message' => 'News with id '. $newsId . ' has been created'], 200);
         }
-        return new JsonResponse(['error' => 'Invalid request method'], 405);
+        return JsonResponse::wrongRequestMethod($_SERVER['REQUEST_METHOD']);
     }
 
     public function updateNews(int $id): JsonResponse
@@ -105,6 +105,7 @@ readonly class NewsController
             return new JsonResponse(['error' => 'Invalid news id'], 400);
 
         }
-        return new JsonResponse(['error' => 'Invalid request method'], 405);
+
+        return JsonResponse::wrongRequestMethod($_SERVER['REQUEST_METHOD']);
     }
 }

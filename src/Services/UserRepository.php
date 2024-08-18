@@ -17,7 +17,7 @@ class UserRepository
         $this->pdo = $this->database->connection();
     }
 
-    public function getUserByLogin(string $login): ?User
+    public function getUserByLogin(?string $login): ?User
     {
         $query = 'SELECT id, login, password FROM "user" WHERE login = :login';
 

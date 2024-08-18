@@ -33,6 +33,11 @@ class JsonResponse
         return $this->error;
     }
 
+    public static function wrongRequestMethod(string $requestMethod): self
+    {
+        return new self(['error' => $requestMethod . ' method not allowed'], 405);
+    }
+
     public function getStatusCode(): int
     {
         return $this->statusCode;
