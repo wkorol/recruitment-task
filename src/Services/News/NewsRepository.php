@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\News;
 
-use src\Config\Database;
 use App\Dto\News;
 use PDO;
 use PDOException;
+use src\Config\Database;
 
-class NewsRepository
+class NewsRepository implements NewsRepositoryInterface
 {
     private PDO $pdo;
     public function __construct(private readonly Database $database)

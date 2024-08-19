@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\User;
 
-use src\Config\Database;
 use App\Dto\User;
 use PDO;
 use PDOException;
+use src\Config\Database;
 
-class UserRepository
+class UserRepository implements UserRepositoryInterface
 {
     private PDO $pdo;
     public function __construct(private readonly Database $database)

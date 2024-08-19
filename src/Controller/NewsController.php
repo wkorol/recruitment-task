@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Services\JsonResponse;
-use App\Services\NewsRepository;
+use App\Services\News\NewsRepositoryInterface;
 use PDOException;
 
 readonly class NewsController
 {
-    public function __construct(private NewsRepository $newsRepository)
+    public function __construct(private NewsRepositoryInterface $newsRepository)
     {
     }
 
