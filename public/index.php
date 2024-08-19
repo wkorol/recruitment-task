@@ -7,8 +7,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Controller\LoginController;
 use App\Controller\NewsController;
 use App\Services\JsonResponse;
-use App\Services\NewsRepository;
-use App\Services\UserRepository;
+use App\Services\News\NewsRepository;
+use App\Services\User\UserRepository;
 use src\Config\Database;
 use src\Config\EnvLoader;
 

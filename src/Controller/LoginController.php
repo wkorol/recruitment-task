@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Services\JsonResponse;
-use App\Services\UserRepository;
+use App\Services\User\UserRepositoryInterface;
 use PDOException;
 
 readonly class LoginController
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private UserRepositoryInterface $userRepository)
     {
         session_start();
     }

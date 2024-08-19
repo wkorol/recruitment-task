@@ -6,7 +6,8 @@ namespace Controller;
 
 use App\Controller\LoginController;
 use App\Dto\User;
-use App\Services\UserRepository;
+use App\Services\User\UserRepository;
+use App\Services\User\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class LoginControllerTest extends TestCase
@@ -21,7 +22,7 @@ class LoginControllerTest extends TestCase
     }
     public function testLoginSuccessful(): void
     {
-        $userRepositoryMock = $this->createMock(UserRepository::class);
+        $userRepositoryMock = $this->createMock(UserRepositoryInterface::class);
 
         $user = new User(1, 'admin', password_hash('test', PASSWORD_DEFAULT));
 
