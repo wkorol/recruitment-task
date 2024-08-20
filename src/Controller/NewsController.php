@@ -31,7 +31,7 @@ readonly class NewsController
                 return new JsonResponse(['error' => $e->getMessage()], 500);
             }
 
-            return new JsonResponse([$news], 200);
+            return new JsonResponse($news, 200);
         }
 
         return JsonResponse::wrongRequestMethod($_SERVER['REQUEST_METHOD']);
