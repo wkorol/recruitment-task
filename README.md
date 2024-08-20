@@ -177,13 +177,11 @@ Retrieves a single news item by its ID.
     - **Description:** The news item is successfully retrieved.
     - **Example Response:**
       ```json
-      [
         {
           "id": 1,
           "title": "Sample News",
           "description": "This is a sample news description."
         }
-      ]
       ```
 - **404 Not Found**
     - **Description:** The news item was not found.
