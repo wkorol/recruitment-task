@@ -22,7 +22,10 @@ class JsonResponse
         echo $this->parseData($data);
     }
 
-    private function parseData($data = []): string
+    /**
+     * @param string|string[] $data
+     */
+    private function parseData(mixed $data = []): string
     {
         $this->data = match (true) {
             $data instanceof JsonSerializable => json_encode($data->jsonSerialize(), JSON_PRETTY_PRINT),
