@@ -16,7 +16,7 @@ class JsonResponse
      */
     public function __construct(private mixed $data, private readonly int $statusCode = 200)
     {
-        $this->extractMessagesAndErrors($data);
+        $this->extractMessagesAndErrors(json_encode($data));
         header('Content-Type: application/json');
         http_response_code($statusCode);
         echo $this->parseData($data);
