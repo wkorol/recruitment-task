@@ -4,21 +4,49 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use JsonSerializable;
+
 class JsonResponse
 {
     private ?string $message = null;
     private ?string $error = null;
 
-    public function __construct(private readonly array $data, private readonly int $statusCode = 200)
+    /**
+     * @param string|string[] $data
+     */
+    public function __construct(private mixed $data, private readonly int $statusCode = 200)
     {
-        $this->extractMessagesAndErrors($data);
+        $this->extractMessagesAndErrors(json_encode($data));
         header('Content-Type: application/json');
         http_response_code($statusCode);
-        echo json_encode($data, JSON_PRETTY_PRINT);
+        echo $this->parseData($data);
     }
 
-    private function extractMessagesAndErrors(array $data): void
+    private function parseData($data = []): string
     {
+        $this->data = match (true) {
+            $data instanceof JsonSerializable => json_encode($data->jsonSerialize(), JSON_PRETTY_PRINT),
+            default => json_encode($data, JSON_PRETTY_PRINT),
+        };
+        return $this->data;
+    }
+
+    /**
+     * @param string|string[] $data
+     */
+    private function extractMessagesAndErrors(mixed $data): void
+    {
+        if (is_string($data)) {
+            $decodedData = json_decode($data, true);
+
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $data = $decodedData;
+            } else {
+                $data = [];
+            }
+        }
+
         $this->message = $data['message'] ?? null;
         $this->error = $data['error'] ?? null;
     }
@@ -43,7 +71,10 @@ class JsonResponse
         return $this->statusCode;
     }
 
-    public function getData(): array
+    /**
+     * @return string|string[]
+     */
+    public function getData(): mixed
     {
         return $this->data ?? [];
     }
